@@ -18,8 +18,21 @@ contract UniswapV2SwapAmountsTest is Test {
         path[1] = address(dai);
         path[2] = address(mkr);
         uint256 amountIn =1e18;
-
+        // this function is use for swapExactTokensForTokens
         uint[] memory amounts = router.getAmountsOut(amountIn, path);
+        console.log(amounts.length);
+        console.log("WETH",amounts[0]);
+        console.log("DAI",amounts[1]);
+        console.log("MKR",amounts[2]);
+    }
+
+    function test_getAmountsIn() public {
+        address[] memory path = new address[](3);
+        path[0] = address(weth);
+        path[1] = address(dai);
+        path[2] = address(mkr);
+        uint256 amountOut = 1e18/100;
+        uint256[] memory amounts = router.getAmountsIn(amountOut, path);
         console.log(amounts.length);
         console.log("WETH",amounts[0]);
         console.log("DAI",amounts[1]);

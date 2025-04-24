@@ -11,7 +11,7 @@ contract UniswapV2SwapAmountsTest is Test {
     IERC20 dai = IERC20(DAI);
     IERC20 mkr = IERC20(MKR);
     IUniswapV2Router02 private router = IUniswapV2Router02(UNISWAP_V2_ROUTER_02);
-    function test_getAmountsOut() public {
+    function test_getAmountsOut() public view {
         console.log("weth");
         address[] memory path = new address[](3);
         path[0] = address(weth);
@@ -26,7 +26,7 @@ contract UniswapV2SwapAmountsTest is Test {
         console.log("MKR",amounts[2]);
     }
 
-    function test_getAmountsIn() public {
+    function test_getAmountsIn() public view {
         address[] memory path = new address[](3);
         path[0] = address(weth);
         path[1] = address(dai);

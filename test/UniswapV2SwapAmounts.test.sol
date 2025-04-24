@@ -11,6 +11,15 @@ contract UniswapV2SwapAmountsTest is Test {
     IERC20 dai = IERC20(DAI);
     IERC20 mkr = IERC20(MKR);
     IUniswapV2Router02 private router = IUniswapV2Router02(UNISWAP_V2_ROUTER_02);
+    address private constant user = address(100);
+
+    function setUp() public {
+        deal(user, 100 * 1e18);
+        vm.startPrank(user);
+        weth.deposit{value: 100 * 1e18}();
+        weth.approve(address(router), type(uint256).max); // user has approved route to spent its weth
+        vm.stopPrank();
+    }
     function test_getAmountsOut() public view {
         console.log("weth");
         address[] memory path = new address[](3);
@@ -38,4 +47,23 @@ contract UniswapV2SwapAmountsTest is Test {
         console.log("DAI",amounts[1]);
         console.log("MKR",amounts[2]);
     }
+
+    function test_swapExactTokensForTokens() public {
+        address[] memory path = new address[](3);
+        path[0] = WETH;
+        path[1] = DAI;
+        path[2] = MKR;
+
+        uint amountIn = 1e18;
+        uint amountOutMin = 1;
+        console.log(mkr.balanceOf(user));
+        vm.prank(user);
+        uint256[] memory amounts = router.swapExactTokensForTokens(amountIn, amountOutMin, path, user, block.timestamp);
+        console.log("WETH", amounts[0]);
+        console.log("DAI", amounts[1]);
+        console.log("MKR", amounts[2]);
+        console.log(mkr.balanceOf(user));
+        assertGe(mkr.balanceOf(user), amountOutMin, "MKR balance of user");
+    }
+
 }

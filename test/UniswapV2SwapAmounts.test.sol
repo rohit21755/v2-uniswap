@@ -87,3 +87,10 @@ contract UniswapV2SwapAmountsTest is Test {
     }
 
 }
+
+//spot price calculations
+// (address token0, address token1) = (pair.token0(), pair.token1());
+// (uint112 reserve0, uint112 reserve1, ) = pair.getReserves();
+
+// uint price0in1 = uint(reserve1) * 1e18 / reserve0; // Token0 price in Token1
+// uint price1in0 = uint(reserve0) * 1e18 / reserve1; // Token1 price in Token0

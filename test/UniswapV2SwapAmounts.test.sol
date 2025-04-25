@@ -5,12 +5,16 @@ import {IWETH} from "../src/interfaces/IWETH.sol";
 import {IERC20} from "../src/interfaces/IERC20.sol";
 import {IUniswapV2Router02} from "../src/interfaces/uniswap-v2/IUniswapV2Router02.sol";
 import { DAI,WETH, MKR, UNISWAP_V2_ROUTER_02 } from "../src/constants.sol";
-
+import {ERC20} from "../src/ERC20.sol";
+import {IUniswapV2Factory} from "../src/interfaces/uniswap-v2/IUniswapV2Factory.sol";
+import {UNISWAP_V2_FACTORY} from "../src/Constants.sol";
+import {IUniswapV2Pair} from "../src/interfaces/uniswap-v2/IUniswapV2Pair.sol";
 contract UniswapV2SwapAmountsTest is Test {
     IWETH weth = IWETH(WETH);
     IERC20 dai = IERC20(DAI);
     IERC20 mkr = IERC20(MKR);
     IUniswapV2Router02 private router = IUniswapV2Router02(UNISWAP_V2_ROUTER_02);
+    IUniswapV2Factory private factory = IUniswapV2Factory(UNISWAP_V2_FACTORY);
     address private constant user = address(100);
 
     function setUp() public {
@@ -84,6 +88,23 @@ contract UniswapV2SwapAmountsTest is Test {
         console.log(mkr.balanceOf(user));
 
         assertEq(mkr.balanceOf(user), amountOut, "MKR balance of user");
+    }
+
+    function test_createPair() public {
+        ERC20 token = new ERC20("test", "Test", 18);
+        address pair = factory.createPair(address(token), WETH);
+
+        address token0 = IUniswapV2Pair(pair).token0();
+        address token1 = IUniswapV2Pair(pair).token1();
+
+        if(address(token) < WETH){
+            assertEq(token0, address(token), "token 0");
+            assertEq(token1, WETH, "token 1");
+        }
+        else {
+            assertEq(token0, WETH, "token 0");
+            assertEq(token1, address(token), "token 1");
+        }
     }
 
 }

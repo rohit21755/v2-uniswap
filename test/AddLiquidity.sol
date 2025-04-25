@@ -43,4 +43,30 @@ contract AddLiquidtyTest is Test {
         assertGt(pair.balanceOf(user), 0, "Lp = 0");
     }
 
+    function test_removeLiquidity() public {
+        vm.startPrank(user);
+        (,, uint256 liquidity) = router.addLiquidity({
+            tokenA: DAI,
+            tokenB: WETH,
+            amountADesired: 1000000 * 1e18,
+            amountBDesired: 100 * 1e18,
+            amountAMin: 1,
+            amountBMin: 1,
+            to: user,
+            deadline: block.timestamp
+        });
+        pair.approve(address(router), liquidity);
+
+        // Exercise - Remove liquidity from DAI / WETH pool
+        // Write your code here
+        // Don’t change any other code
+        (uint amountA, uint amountB) = router.removeLiquidity(DAI, WETH, liquidity, 1, 1, user, block.timestamp);
+
+        console.log(amountA, amountB, liquidity);
+
+        vm.stopPrank();
+
+        assertEq(pair.balanceOf(user), 0, "LP = 0");
+    }
+
 }
